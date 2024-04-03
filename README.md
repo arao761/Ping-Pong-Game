@@ -1,2 +1,1 @@
-# Ping-Pong-Game
-Fun and cool Ping Pong Game I created with Java for an Intro to Computer Science Class
+Cool ping pong game I created with utilizing animations by implementing graphics, key and timer listeners, and various sound libraries. 
