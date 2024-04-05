@@ -17,11 +17,10 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     private final int BALL_SIZE = 20;
     private final int PADDLE_SPEED = 50;
     private final Timer timer;
-    
-    private PingPong game;
+    private PingPong pingPong;
 
     public PingPongAnimation() {
-        game = new PingPong(WINDOW_WIDTH, WINDOW_HEIGHT, BALL_SIZE, PADDLE_HEIGHT);
+        pingPong = new PingPong(WINDOW_WIDTH, WINDOW_HEIGHT, BALL_SIZE, PADDLE_HEIGHT);
 
         setBackground(Color.RED);
         setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -33,13 +32,13 @@ public class PingPongAnimation extends JPanel implements ActionListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_W) {
-                    game.movePaddle(0, game.getLeftPaddleY() - PADDLE_SPEED);
+                    pingPong.movePaddle(0, pingPong.getLeftPaddleY() - PADDLE_SPEED);
                 } else if (e.getKeyCode() == KeyEvent.VK_S) {
-                    game.movePaddle(0, game.getLeftPaddleY() + PADDLE_SPEED);
+                    pingPong.movePaddle(0, pingPong.getLeftPaddleY() + PADDLE_SPEED);
                 } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    game.movePaddle(1, game.getRightPaddleY() - PADDLE_SPEED);
+                    pingPong.movePaddle(1, pingPong.getRightPaddleY() - PADDLE_SPEED);
                 } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    game.movePaddle(1, game.getRightPaddleY() + PADDLE_SPEED);
+                    pingPong.movePaddle(1, pingPong.getRightPaddleY() + PADDLE_SPEED);
                 }
             }
         });
@@ -49,28 +48,32 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.YELLOW);
-        g.fillRect(40, game.getLeftPaddleY(), PADDLE_WIDTH, PADDLE_HEIGHT);
-        g.fillRect(WINDOW_WIDTH - 60, game.getRightPaddleY(), PADDLE_WIDTH, PADDLE_HEIGHT);
-
-        for (Ball ball : game.getBalls()) {
-            g.setColor(Color.BLACK);
-            g.fillOval(ball.getX(), ball.getY(), BALL_SIZE, BALL_SIZE);
+        g.fillRect(40, pingPong.getLeftPaddleY(), PADDLE_WIDTH, PADDLE_HEIGHT);
+        g.fillRect(WINDOW_WIDTH - 60, pingPong.getRightPaddleY(), PADDLE_WIDTH, PADDLE_HEIGHT);
+        
+        for (Ball ball : pingPong.getBalls()) {
+            g.setColor(Color.ORANGE);
+           
+            //Since the ball is drawn from the top-left corner, we need to subtract half of the ball size
+            int x = (int) ball.getX() - BALL_SIZE / 2;
+            int y = (int) ball.getY() - BALL_SIZE / 2;
+            g.fillOval(x, y, BALL_SIZE, BALL_SIZE);
         }
         
         g.setColor(Color.BLUE);
         g.setFont(new Font("Courier", Font.BOLD, 24));
-        g.drawString("Left Player: " + game.getLeftScore() + "    Right Player: " + game.getRightScore(),
+        g.drawString("Left Player: " + pingPong.getLeftScore() + "    Right Player: " + pingPong.getRightScore(),
                      (WINDOW_WIDTH / 2) - 170, 30);
     }
 
     public void actionPerformed(ActionEvent e) {
-        game.moveBall();
+        pingPong.moveBall();
         repaint();
     }
 
     public void playMusic() {
         File soundFile;
-        soundFile = new File("c:\\Users\\1009197\\Downloads\\01-Private-Landing-_Ft.-Justin-Bieber-_-Future_.wav");
+        soundFile = new File("/Users/ankitrao/Downloads/01-Private-Landing-_Ft.-Justin-Bieber-_-Future_.wav");
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
             Clip clip = AudioSystem.getClip();

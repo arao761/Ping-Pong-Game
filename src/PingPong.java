@@ -6,6 +6,7 @@ public class PingPong {
     private int rightScore;
     private int leftScore;
     private Ball[] balls;
+    private final int PADDLE_WIDTH = 20;
 
     public int getWINDOW_HEIGHT() {
         return WINDOW_HEIGHT;
@@ -84,11 +85,13 @@ public class PingPong {
         this.WINDOW_HEIGHT = windowHeight;
         this.BALL_SIZE = ballSize;
         this.PADDLE_HEIGHT = paddleHeight;
-
+    
         // Initialize balls array with 10 balls
-        balls = new Ball[10]; 
+        balls = new Ball[10];
         for (int i = 0; i < balls.length; i++) {
             balls[i] = new Ball(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, BALL_SIZE, Color.BLACK);
+            // Assigns a random initial speed to each ball
+            balls[i].setRandomSpeed(8); 
         }
     }
 
@@ -99,21 +102,43 @@ public class PingPong {
         ball.setYSpeed(0);
     }
 
-    public void moveBall() {
+    public void checkCollisionWithPaddles() {
         for (Ball ball : balls) {
-            ball.move(WINDOW_WIDTH, WINDOW_HEIGHT);
-
-            //Checks score and increments when a point is gained  
-            if (ball.getX() - ball.getRadius() <= 0) {
-                rightScore++;
-                resetBall(ball);
-            } else if (ball.getX() + ball.getRadius() >= WINDOW_WIDTH) {
-                leftScore++;
-                resetBall(ball);
+            // Checks collision with the left paddle
+            if (ball.getX() - ball.getRadius() <= PADDLE_WIDTH + 40 && 
+                ball.getY() + ball.getRadius() >= leftPaddleY && 
+                ball.getY() - ball.getRadius() <= leftPaddleY + PADDLE_HEIGHT) {
+                ball.setXSpeed(Math.abs(ball.getXSpeed())); // Reverses speed positively
+            }
+    
+            // Checks collision with the right paddle
+            if (ball.getX() + ball.getRadius() >= WINDOW_WIDTH - PADDLE_WIDTH - 60 && 
+                ball.getY() + ball.getRadius() >= rightPaddleY && 
+                ball.getY() - ball.getRadius() <= rightPaddleY + PADDLE_HEIGHT) {
+                ball.setXSpeed(-Math.abs(ball.getXSpeed())); // Reverses speed negatively
             }
         }
     }
 
+    public void moveBall() {
+        for (Ball ball : balls) {
+            ball.move(WINDOW_WIDTH, WINDOW_HEIGHT);
+    
+            //Calls the checkCollisionWithPaddles method
+            checkCollisionWithPaddles();
+    
+            // Checks for scoring
+            if (ball.getX() - ball.getRadius() <= 0) {
+                rightScore++;
+                resetBall(ball); // Resets the ball to the center
+            } else if (ball.getX() + ball.getRadius() >= WINDOW_WIDTH) {
+                leftScore++;
+                resetBall(ball); // Resets the ball to the center
+            }
+        }
+    }
+    
+    //Makes sure the paddles dont go off the screen 
     public void movePaddle(int paddle, int y) {
         if (y < 0) {
             y = 0;
