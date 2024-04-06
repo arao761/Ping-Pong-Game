@@ -8,22 +8,20 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
+import java.awt.geom.Ellipse2D;
 
 public class PingPongAnimation extends JPanel implements ActionListener {
-    private final int WINDOW_WIDTH = 1000;
-    private final int WINDOW_HEIGHT = 1000;
+    private final int ballSize = 25;
+    private final int paddleSpeed = 50;
     private final int PADDLE_WIDTH = 20;
-    private final int PADDLE_HEIGHT = 120;
-    private final int BALL_SIZE = 20;
-    private final int PADDLE_SPEED = 50;
     private final Timer timer;
     private PingPong pingPong;
 
     public PingPongAnimation() {
-        pingPong = new PingPong(WINDOW_WIDTH, WINDOW_HEIGHT, BALL_SIZE, PADDLE_HEIGHT);
+        pingPong = new PingPong(1000, 1000, 20, 120);
 
         setBackground(Color.RED);
-        setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        setPreferredSize(new Dimension(1000, 1000));
         setFocusable(true);
         timer = new Timer(1000 / 60, this);
         timer.start();
@@ -32,38 +30,52 @@ public class PingPongAnimation extends JPanel implements ActionListener {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_W) {
-                    pingPong.movePaddle(0, pingPong.getLeftPaddleY() - PADDLE_SPEED);
+                    pingPong.movePaddle(0, pingPong.getLeftPaddleY() - paddleSpeed);
                 } else if (e.getKeyCode() == KeyEvent.VK_S) {
-                    pingPong.movePaddle(0, pingPong.getLeftPaddleY() + PADDLE_SPEED);
+                    pingPong.movePaddle(0, pingPong.getLeftPaddleY() + paddleSpeed);
                 } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    pingPong.movePaddle(1, pingPong.getRightPaddleY() - PADDLE_SPEED);
+                    pingPong.movePaddle(1, pingPong.getRightPaddleY() - paddleSpeed);
                 } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    pingPong.movePaddle(1, pingPong.getRightPaddleY() + PADDLE_SPEED);
+                    pingPong.movePaddle(1, pingPong.getRightPaddleY() + paddleSpeed);
                 }
             }
         });
     }
-
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.YELLOW);
-        g.fillRect(40, pingPong.getLeftPaddleY(), PADDLE_WIDTH, PADDLE_HEIGHT);
-        g.fillRect(WINDOW_WIDTH - 60, pingPong.getRightPaddleY(), PADDLE_WIDTH, PADDLE_HEIGHT);
-        
+        Graphics2D g2d = (Graphics2D) g;
+
+        // Gradient background
+        Paint gradient = new GradientPaint(0, 0, Color.BLACK, getWidth(), getHeight(), Color.DARK_GRAY);
+        g2d.setPaint(gradient);
+        g2d.fillRect(0, 0, getWidth(), getHeight());
+
+        //Paddles
+        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.fillRoundRect(20, pingPong.getLeftPaddleY(), PADDLE_WIDTH, pingPong.getPaddleHeight(), 10, 10);
+        g2d.fillRoundRect(getWidth() - PADDLE_WIDTH - 20, pingPong.getRightPaddleY(), PADDLE_WIDTH, pingPong.getPaddleHeight(), 10, 10);
+
+        //Balls
         for (Ball ball : pingPong.getBalls()) {
-            g.setColor(Color.ORANGE);
-           
-            //Since the ball is drawn from the top-left corner, we need to subtract half of the ball size
-            int x = (int) ball.getX() - BALL_SIZE / 2;
-            int y = (int) ball.getY() - BALL_SIZE / 2;
-            g.fillOval(x, y, BALL_SIZE, BALL_SIZE);
+            g2d.setColor(Color.WHITE);
+            Ellipse2D.Double ballShape = new Ellipse2D.Double(ball.getX() - ballSize / 2, ball.getY() - ballSize / 2, ballSize, ballSize);
+            g2d.fill(ballShape);
+
+            g2d.setColor(Color.GRAY);
+            g2d.draw(ballShape);
         }
-        
-        g.setColor(Color.BLUE);
-        g.setFont(new Font("Courier", Font.BOLD, 24));
-        g.drawString("Left Player: " + pingPong.getLeftScore() + "    Right Player: " + pingPong.getRightScore(),
-                     (WINDOW_WIDTH / 2) - 170, 30);
+
+        // Score display
+        String scoreText = "Left Player: " + pingPong.getLeftScore() + "    Right Player: " + pingPong.getRightScore();
+        Font scoreFont = new Font("Courier", Font.BOLD, 24);
+        g2d.setFont(scoreFont);
+        FontMetrics metrics = g2d.getFontMetrics(scoreFont);
+        int textWidth = metrics.stringWidth(scoreText);
+        int xPosition = (getWidth() - textWidth) / 2; // Centers the text
+        int yPosition = 30; // Vertical position remains unchanged
+        g2d.drawString(scoreText, xPosition, yPosition);
     }
 
     public void actionPerformed(ActionEvent e) {
