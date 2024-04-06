@@ -110,21 +110,23 @@ public class PingPong {
 
     public void checkCollisionWithPaddles() {
         for (Ball ball : balls) {
-            // Checks collision with the left paddle
-            if (ball.getX() - ball.getRadius() <= paddleWidth + 40 && 
-                ball.getY() + ball.getRadius() >= leftPaddleY && 
-                ball.getY() - ball.getRadius() <= leftPaddleY + paddleHeight) {
-                ball.setXSpeed(Math.abs(ball.getXSpeed())); // Reverses speed to make it positive
+            // Left paddle collision detection
+            if (ball.getX() - ball.getRadius() <= (20 + paddleWidth) && // Check if the ball is within the paddle's x range
+                ball.getY() + ball.getRadius() >= leftPaddleY && // Check if the bottom of the ball is at or below the top of the paddle
+                ball.getY() - ball.getRadius() <= leftPaddleY + paddleHeight) { // Check if the top of the ball is at or above the bottom of the paddle
+                ball.setXSpeed(Math.abs(ball.getXSpeed())); // Reverse the ball's X speed to bounce it back
             }
     
-            // Checks collision with the right paddle
-            if (ball.getX() + ball.getRadius() >= windowWidth - paddleWidth - 60 && 
-                ball.getY() + ball.getRadius() >= rightPaddleY && 
-                ball.getY() - ball.getRadius() <= rightPaddleY + paddleHeight) {
-                ball.setXSpeed(-Math.abs(ball.getXSpeed())); // Reverses speed to make it negative
+            // Right paddle collision detection
+            if (ball.getX() + ball.getRadius() >= windowWidth - (20 + paddleWidth) && // Adjust x coordinate for right paddle
+                ball.getY() + ball.getRadius() >= rightPaddleY && // Check if the bottom of the ball is at or below the top of the paddle
+                ball.getY() - ball.getRadius() <= rightPaddleY + paddleHeight) { // Check if the top of the ball is at or above the bottom of the paddle
+                ball.setXSpeed(-Math.abs(ball.getXSpeed())); // Reverse the ball's X speed to bounce it back
             }
         }
     }
+    
+    
 
     public void moveBall() {
         for (Ball ball : balls) {

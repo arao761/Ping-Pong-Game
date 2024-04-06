@@ -79,6 +79,8 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
+        pingPong.setWindowWidth(getWidth());
+        pingPong.setWindowHeight(getHeight());
         pingPong.moveBall();
         repaint();
     }
@@ -96,14 +98,5 @@ public class PingPongAnimation extends JPanel implements ActionListener {
             e.printStackTrace();
         }
     }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Ping Pong Game");
-        PingPongAnimation game = new PingPongAnimation();
-        frame.add(game);
-        frame.pack();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        game.playMusic();
-    }
+    
 }
