@@ -48,12 +48,12 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         Graphics2D g2d = (Graphics2D) g;
 
         // Gradient background
-        Paint gradient = new GradientPaint(0, 0, Color.BLACK, getWidth(), getHeight(), Color.DARK_GRAY);
+        Paint gradient = new GradientPaint(0, 0, Color.ORANGE, getWidth(), getHeight(), Color.RED);
         g2d.setPaint(gradient);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
         //Paddles
-        g2d.setColor(Color.LIGHT_GRAY);
+        g2d.setColor(Color.BLUE);
         g2d.fillRoundRect(20, pingPong.getLeftPaddleY(), PADDLE_WIDTH, pingPong.getPaddleHeight(), 10, 10);
         g2d.fillRoundRect(getWidth() - PADDLE_WIDTH - 20, pingPong.getRightPaddleY(), PADDLE_WIDTH, pingPong.getPaddleHeight(), 10, 10);
 
@@ -68,6 +68,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         }
 
         // Score display
+        g.setColor(Color.BLUE);
         String scoreText = "Left Player: " + pingPong.getLeftScore() + "    Right Player: " + pingPong.getRightScore();
         Font scoreFont = new Font("Courier", Font.BOLD, 24);
         g2d.setFont(scoreFont);
@@ -98,5 +99,5 @@ public class PingPongAnimation extends JPanel implements ActionListener {
             e.printStackTrace();
         }
     }
-    
+
 }
