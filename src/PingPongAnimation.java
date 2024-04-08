@@ -67,6 +67,12 @@ public class PingPongAnimation extends JPanel implements ActionListener {
             g2d.draw(ballShape);
         }
 
+        //Draks a dotted line in the center to distinguish the two sides of the game
+        g2d.setColor(Color.WHITE);
+        float[] dashPattern = {10, 10};
+        g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, dashPattern, 0));
+        g2d.drawLine(getWidth()/2, 0, getWidth()/2, getHeight());
+
         // Score display
         g.setColor(Color.BLUE);
         String scoreText = "Left Player: " + pingPong.getLeftScore() + "    Right Player: " + pingPong.getRightScore();

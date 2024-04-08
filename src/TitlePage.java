@@ -60,6 +60,7 @@ public class TitlePage extends JFrame {
     verticalBox.add(Box.createVerticalStrut(100)); // Add empty space
     verticalBox.add(startButton);
     add(verticalBox, BorderLayout.CENTER);
+
     }
 
 
