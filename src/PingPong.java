@@ -105,7 +105,7 @@ public class PingPong {
     public void resetBall(Ball ball) {
         ball.setX(windowWidth / 2);
         ball.setY(windowHeight / 2);
-        ball.setRandomSpeed(8);
+        ball.setRandomSpeed(14);
     }
 
     public void checkCollisionWithPaddles() {
@@ -124,9 +124,7 @@ public class PingPong {
                 ball.setXSpeed(-Math.abs(ball.getXSpeed())); // Reverse the ball's X speed to bounce it back
             }
         }
-    }
-    
-    
+    } 
 
     public void moveBall() {
         for (Ball ball : balls) {

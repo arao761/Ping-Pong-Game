@@ -94,7 +94,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
 
     public void playMusic() {
         File soundFile;
-        soundFile = new File("/Users/ankitrao/Downloads/01-Private-Landing-_Ft.-Justin-Bieber-_-Future_.wav");
+        soundFile = new File("c:\\Users\\1009197\\Downloads\\you belong with me.wav");
         try {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
             Clip clip = AudioSystem.getClip();
