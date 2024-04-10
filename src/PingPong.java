@@ -11,6 +11,9 @@ public class PingPong {
     private int leftScore;
     private Ball[] balls;
     private final int paddleWidth = 20;
+    private final int winningScore = 15;
+    private GameOverListener gameOverListener;
+
 
     public int getWindowHeight() {
         return windowHeight;
@@ -129,21 +132,30 @@ public class PingPong {
     public void moveBall() {
         for (Ball ball : balls) {
             ball.move(windowWidth, windowHeight);
-    
-            //Calls the checkCollisionWithPaddles method
             checkCollisionWithPaddles();
-    
+
             // Checks for scoring
             if (ball.getX() - ball.getRadius() <= 0) {
                 rightScore++;
-                resetBall(ball); // Resets the ball to the center
+                if (rightScore >= winningScore) {
+                    if (gameOverListener != null) {
+                        gameOverListener.onGameOver("Right Player Wins!");
+                    }
+                    return; // Stops processing further movement
+                }
+                resetBall(ball);
             } else if (ball.getX() + ball.getRadius() >= windowWidth) {
                 leftScore++;
-                resetBall(ball); // Resets the ball to the center
+                if (leftScore >= winningScore) {
+                    if (gameOverListener != null) {
+                        gameOverListener.onGameOver("Left Player Wins!");
+                    }
+                    return; // Stops processing further movement
+                }
+                resetBall(ball);
             }
         }
     }
-    
     //Makes sure the paddles dont go off the screen 
     public void movePaddle(int paddle, int y) {
         if (y < 0) {
@@ -160,5 +172,15 @@ public class PingPong {
             rightPaddleY = y;
         }
     }
+
     
-}
+    public interface GameOverListener {
+        void onGameOver(String winnerMessage);
+    }
+
+    public void setGameOverListener(GameOverListener listener) {
+        this.gameOverListener = listener;
+    }
+
+ } 
+

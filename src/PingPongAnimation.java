@@ -40,6 +40,10 @@ public class PingPongAnimation extends JPanel implements ActionListener {
                 }
             }
         });
+
+        pingPong.setGameOverListener(winnerMessage -> {
+            SwingUtilities.invokeLater(() -> displayGameOverMessage(winnerMessage));
+        });
     }
     
     @Override
@@ -105,5 +109,11 @@ public class PingPongAnimation extends JPanel implements ActionListener {
             e.printStackTrace();
         }
     }
+
+    private void displayGameOverMessage(String message) {
+        JOptionPane.showMessageDialog(this, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
+        System.exit(0);
+    }
+    
 
 }
