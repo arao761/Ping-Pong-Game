@@ -49,15 +49,15 @@ public class TitlePage extends JFrame {
             startGame();
         }
     });
-    startButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Center alignment
+    startButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Centers alignment
 
-    // Layout
+    // Layout with vertical boxes to have spacing between the title, subtitle, and start button
     Box verticalBox = Box.createVerticalBox();
-    verticalBox.add(Box.createVerticalStrut(200)); // Add empty space
+    verticalBox.add(Box.createVerticalStrut(200)); // Adds empty space
     verticalBox.add(titleLabel);
-    verticalBox.add(Box.createVerticalStrut(50)); // Add empty space
+    verticalBox.add(Box.createVerticalStrut(50)); // Adds empty space
     verticalBox.add(subtitleLabel);
-    verticalBox.add(Box.createVerticalStrut(100)); // Add empty space
+    verticalBox.add(Box.createVerticalStrut(100)); // Adds empty space
     verticalBox.add(startButton);
     add(verticalBox, BorderLayout.CENTER);
 
@@ -75,6 +75,7 @@ public class TitlePage extends JFrame {
         game.playMusic();
     }
 
+    //Main method to run the game
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             TitlePage tp = new TitlePage();

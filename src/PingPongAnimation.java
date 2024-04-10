@@ -12,13 +12,11 @@ import java.awt.geom.Ellipse2D;
 
 public class PingPongAnimation extends JPanel implements ActionListener {
     private final int ballSize = 25;
-    private final int paddleSpeed = 50;
-    private final int PADDLE_WIDTH = 20;
     private final Timer timer;
     private PingPong pingPong;
 
     public PingPongAnimation() {
-        pingPong = new PingPong(1000, 1000, 20, 120);
+        pingPong = new PingPong(1000, 1000, ballSize, 120); // Assuming 120 is the paddle height
 
         setBackground(Color.RED);
         setPreferredSize(new Dimension(1000, 1000));
@@ -26,29 +24,33 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         timer = new Timer(1000 / 60, this);
         timer.start();
 
+       //Keyboard movements and binding to the certain keys 
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_W) {
-                    pingPong.movePaddle(0, pingPong.getLeftPaddleY() - paddleSpeed);
-                } else if (e.getKeyCode() == KeyEvent.VK_S) {
-                    pingPong.movePaddle(0, pingPong.getLeftPaddleY() + paddleSpeed);
-                } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    pingPong.movePaddle(1, pingPong.getRightPaddleY() - paddleSpeed);
-                } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                    pingPong.movePaddle(1, pingPong.getRightPaddleY() + paddleSpeed);
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_W:
+                        pingPong.getLeftPaddle().moveUp();
+                        break;
+                    case KeyEvent.VK_S:
+                        pingPong.getLeftPaddle().moveDown();
+                        break;
+                    case KeyEvent.VK_UP:
+                        pingPong.getRightPaddle().moveUp();
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        pingPong.getRightPaddle().moveDown();
+                        break;
                 }
             }
         });
 
-        pingPong.setGameOverListener(winnerMessage -> {
-            SwingUtilities.invokeLater(() -> {
-                pingPong.stopGame(); // Stops the game to then show the winner mesaage
-                displayGameOverMessage(winnerMessage);
-            });
-        });
+        pingPong.setGameOverListener(winnerMessage -> SwingUtilities.invokeLater(() -> {
+            pingPong.stopGame();
+            displayGameOverMessage(winnerMessage);
+        }));
     }
-    
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -59,39 +61,34 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         g2d.setPaint(gradient);
         g2d.fillRect(0, 0, getWidth(), getHeight());
 
-        //Paddles
+        // Draw paddles
         g2d.setColor(Color.BLUE);
-        g2d.fillRoundRect(20, pingPong.getLeftPaddleY(), PADDLE_WIDTH, pingPong.getPaddleHeight(), 10, 10);
-        g2d.fillRoundRect(getWidth() - PADDLE_WIDTH - 20, pingPong.getRightPaddleY(), PADDLE_WIDTH, pingPong.getPaddleHeight(), 10, 10);
+        g2d.fillRoundRect(20, pingPong.getLeftPaddle().getYPosition(), 20, pingPong.getPaddleHeight(), 10, 10);
+        g2d.fillRoundRect(getWidth() - 40, pingPong.getRightPaddle().getYPosition(), 20, pingPong.getPaddleHeight(), 10, 10);
 
-        //Balls
+        // Draw balls
         for (Ball ball : pingPong.getBalls()) {
             g2d.setColor(Color.WHITE);
             Ellipse2D.Double ballShape = new Ellipse2D.Double(ball.getX() - ballSize / 2, ball.getY() - ballSize / 2, ballSize, ballSize);
             g2d.fill(ballShape);
-
-            g2d.setColor(Color.GRAY);
-            g2d.draw(ballShape);
         }
 
-        //Draws a dotted line in the center to distinguish the two sides of the game
+        // Dotted line in the center
         g2d.setColor(Color.WHITE);
         float[] dashPattern = {10, 10};
         g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, dashPattern, 0));
         g2d.drawLine(getWidth()/2, 0, getWidth()/2, getHeight());
 
         // Score display
-        g.setColor(Color.BLUE);
         String scoreText = "Left Player: " + pingPong.getLeftScore() + "    Right Player: " + pingPong.getRightScore();
         Font scoreFont = new Font("Courier", Font.BOLD, 24);
         g2d.setFont(scoreFont);
         FontMetrics metrics = g2d.getFontMetrics(scoreFont);
         int textWidth = metrics.stringWidth(scoreText);
-        int xPosition = (getWidth() - textWidth) / 2; // Centers the text
-        int yPosition = 30; // Vertical position remains unchanged
-        g2d.drawString(scoreText, xPosition, yPosition);
+        g2d.drawString(scoreText, (getWidth() - textWidth) / 2, 30);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
         pingPong.setWindowWidth(getWidth());
         pingPong.setWindowHeight(getHeight());
@@ -100,15 +97,13 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     }
 
     public void playMusic() {
-        File soundFile;
-        soundFile = new File("c:\\Users\\1009197\\Downloads\\you belong with me.wav");
-        try {
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
-            Clip clip = AudioSystem.getClip();
+        File soundFile = new File("c:\\Users\\1009197\\Downloads\\you belong with me.wav");
+        try (AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+             Clip clip = AudioSystem.getClip()) {
             clip.open(audioIn);
             clip.loop(Clip.LOOP_CONTINUOUSLY);
         } catch (Exception e) {
-            System.out.println("Audio error" + e.getMessage());
+            System.out.println("Audio error: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -117,6 +112,4 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         JOptionPane.showMessageDialog(this, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
         System.exit(0);
     }
-    
-
 }
