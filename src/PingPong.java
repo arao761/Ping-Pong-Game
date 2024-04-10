@@ -93,7 +93,7 @@ public class PingPong {
         this.leftPaddleY = (windowHeight/2) - (paddleHeight/2);
         this.rightPaddleY = (windowHeight/2) - (paddleHeight/2);
     
-        // Initializes the array of balls with 8 balls
+        // Initializes the array of balls with 7 balls
         balls = new Ball[7];
         for (int i = 0; i < balls.length; i++) {
             balls[i] = new Ball(windowWidth / 2, windowHeight / 2, ballSize, Color.ORANGE);
