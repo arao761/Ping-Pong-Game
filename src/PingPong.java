@@ -13,6 +13,7 @@ public class PingPong {
     private final int paddleWidth = 20;
     private final int winningScore = 15;
     private GameOverListener gameOverListener;
+    private boolean isGameOver = false; // Booolean to stop the game
 
 
     public int getWindowHeight() {
@@ -130,6 +131,11 @@ public class PingPong {
     } 
 
     public void moveBall() {
+
+        if(isGameOver){
+            return;
+        }
+
         for (Ball ball : balls) {
             ball.move(windowWidth, windowHeight);
             checkCollisionWithPaddles();
@@ -173,7 +179,11 @@ public class PingPong {
         }
     }
 
-    
+    public void stopGame(){
+        this.isGameOver = true;
+    }
+
+
     public interface GameOverListener {
         void onGameOver(String winnerMessage);
     }

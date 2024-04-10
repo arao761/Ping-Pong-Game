@@ -42,7 +42,10 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         });
 
         pingPong.setGameOverListener(winnerMessage -> {
-            SwingUtilities.invokeLater(() -> displayGameOverMessage(winnerMessage));
+            SwingUtilities.invokeLater(() -> {
+                pingPong.stopGame(); // Stops the game to then show the winner mesaage
+                displayGameOverMessage(winnerMessage);
+            });
         });
     }
     
