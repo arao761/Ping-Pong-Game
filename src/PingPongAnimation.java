@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -46,7 +47,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     private void stopGameActivities() {
         pingPong.stopGame();  // Stops the game, will stop ball movements
         timer.stop();
-        if (musicClip != null) {
+        if (musicClip != null && musicClip.isRunning()) {
             musicClip.stop();  // Stop playing music
         }
     }
@@ -144,7 +145,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     
     private void displayGameOverMessage(String message) {
         JDialog gameOverDialog = new JDialog();
-        gameOverDialog.setSize(400, 200);
+        gameOverDialog.setSize(400, 80);
         gameOverDialog.setLayout(new BorderLayout());
         gameOverDialog.setLocationRelativeTo(this);
         gameOverDialog.setModal(true);
