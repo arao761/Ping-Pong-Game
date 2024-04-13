@@ -45,6 +45,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
 
     private void stopGameActivities() {
         pingPong.stopGame();  // Stops the game, will stop ball movements
+        timer.stop();
         if (musicClip != null) {
             musicClip.stop();  // Stop playing music
         }
@@ -96,19 +97,28 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         g2d.drawLine(getWidth()/2, 0, getWidth()/2, getHeight());
 
         // Score display
-        String scoreText = "Left Player: " + pingPong.getLeftScore() + "    Right Player: " + pingPong.getRightScore();
         Font scoreFont = new Font("Courier", Font.BOLD, 30);
         g2d.setFont(scoreFont);
         FontMetrics metrics = g2d.getFontMetrics(scoreFont);
-        int textWidth = metrics.stringWidth(scoreText);
-        g2d.drawString(scoreText, (getWidth() - textWidth) / 3, 30);
+
+        String leftScoreText = "Left Player: " + pingPong.getLeftScore();
+        String rightScoreText = "Right Player: " + pingPong.getLeftScore();
+
+        int leftTextWidth = metrics.stringWidth(leftScoreText);
+        int rightTextWidth = metrics.stringWidth(rightScoreText);
+
+        g2d.drawString(leftScoreText, 30,30);
+        g2d.drawString(rightScoreText, getWidth() - rightTextWidth - 30, 30);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         pingPong.setWindowWidth(getWidth());
         pingPong.setWindowHeight(getHeight());
-        pingPong.moveBall();
+        if (!pingPong.isGameOver()) {
+            pingPong.moveBall();
+            repaint();
+        }
         repaint();
     }
 
@@ -135,6 +145,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     
 
 
+   
     private void displayGameOverMessage(String message) {
         JDialog gameOverDialog = new JDialog();
         gameOverDialog.setSize(400, 200);
@@ -153,8 +164,9 @@ public class PingPongAnimation extends JPanel implements ActionListener {
             }
         };
         messagePanel.setLayout(new BorderLayout());
-        JLabel messageLabel = new JLabel("<html><div style='text-align: center; color: white; font-size: 16px;'>" + message + "</div></html>");
-        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        JLabel messageLabel = new JLabel(message, SwingConstants.CENTER);
+        messageLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        messageLabel.setForeground(Color.WHITE);
         messagePanel.add(messageLabel, BorderLayout.CENTER);
 
         gameOverDialog.add(messagePanel);

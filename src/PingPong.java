@@ -179,6 +179,10 @@ public class PingPong {
         this.isGameOver = true;
     }
 
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
     //Interface to listen for the game over event and to connect the game over event to the main class
     public interface GameOverListener {
         void onGameOver(String winnerMessage);
