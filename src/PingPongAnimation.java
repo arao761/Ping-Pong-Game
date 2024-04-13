@@ -52,6 +52,9 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     }
 
     private void handleKeyEvents(KeyEvent e) {
+
+        if (pingPong.isGameOver()) return; // Ignore inputs if game is over
+        
         switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
                 pingPong.getLeftPaddle().moveUp();
@@ -102,24 +105,20 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         FontMetrics metrics = g2d.getFontMetrics(scoreFont);
 
         String leftScoreText = "Left Player: " + pingPong.getLeftScore();
-        String rightScoreText = "Right Player: " + pingPong.getLeftScore();
+        String rightScoreText = "Right Player: " + pingPong.getRightScore();
 
-        int leftTextWidth = metrics.stringWidth(leftScoreText);
         int rightTextWidth = metrics.stringWidth(rightScoreText);
 
         g2d.drawString(leftScoreText, 30,30);
         g2d.drawString(rightScoreText, getWidth() - rightTextWidth - 30, 30);
     }
 
-    @Override
+   @Override
     public void actionPerformed(ActionEvent e) {
-        pingPong.setWindowWidth(getWidth());
-        pingPong.setWindowHeight(getHeight());
         if (!pingPong.isGameOver()) {
             pingPong.moveBall();
             repaint();
         }
-        repaint();
     }
 
     public Clip playMusic() {
@@ -143,9 +142,6 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         return null; 
     }
     
-
-
-   
     private void displayGameOverMessage(String message) {
         JDialog gameOverDialog = new JDialog();
         gameOverDialog.setSize(400, 200);
@@ -163,11 +159,10 @@ public class PingPongAnimation extends JPanel implements ActionListener {
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         };
-        messagePanel.setLayout(new BorderLayout());
         JLabel messageLabel = new JLabel(message, SwingConstants.CENTER);
         messageLabel.setFont(new Font("Arial", Font.BOLD, 20));
         messageLabel.setForeground(Color.WHITE);
-        messagePanel.add(messageLabel, BorderLayout.CENTER);
+        messagePanel.add(messageLabel);
 
         gameOverDialog.add(messagePanel);
         gameOverDialog.setVisible(true);

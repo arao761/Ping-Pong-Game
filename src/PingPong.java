@@ -123,9 +123,8 @@ public class PingPong {
  }
 
     public void moveBall() {
-
         if(isGameOver){
-            return;
+            return;  // Stop any further updates if the game is over
         }
 
         for (Ball ball : balls) {
@@ -135,25 +134,29 @@ public class PingPong {
             // Checks for scoring
             if (ball.getX() - ball.getRadius() <= 0) {
                 rightScore++;
-                if (rightScore >= winningScore) {
-                    if (gameOverListener != null) {
-                        gameOverListener.onGameOver("Right Player Wins!");
-                    }
+                if (rightScore == winningScore) {
+                    triggerGameOver("Right Player Wins!");
                     return; 
                 }
                 resetBall(ball);
             } else if (ball.getX() + ball.getRadius() >= windowWidth) {
                 leftScore++;
-                if (leftScore >= winningScore) {
-                    if (gameOverListener != null) {
-                        gameOverListener.onGameOver("Left Player Wins!");
-                    }
+                if (leftScore == winningScore) {
+                    triggerGameOver("Left Player Wins!");
                     return;
                 }
                 resetBall(ball);
             }
         }
     }
+
+    private void triggerGameOver(String winnerMessage) {
+        if(gameOverListener != null && !isGameOver) {
+            gameOverListener.onGameOver(winnerMessage);
+        }
+        stopGame();
+    }
+
     
     //Method to move the paddles up and down
     public void movePaddle(int paddle, boolean moveUp) {
