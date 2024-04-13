@@ -106,18 +106,25 @@ public class PingPong {
 
     public void checkCollisionWithPaddles() {
         for (Ball ball : balls) {
+            int ballLeftEdge = (int) (ball.getX() - ball.getRadius());
+            int ballRightEdge = (int) (ball.getX() + ball.getRadius());
+            int leftPaddleRightEdge = paddleWidth;
+            int rightPaddleLeftEdge = windowWidth - paddleWidth;
+
             // Left paddle collision detection
-            if (ball.getX() - ball.getRadius() <= paddleWidth && 
+            if (ballLeftEdge <= leftPaddleRightEdge &&
                 ball.getY() >= leftPaddle.getYPosition() &&
                 ball.getY() <= leftPaddle.getYPosition() + paddleHeight) {
-                ball.setXSpeed(Math.abs(ball.getXSpeed()));
+                ball.setXSpeed(Math.abs(ball.getXSpeed()));  // Reverses direction
+                ball.setX(leftPaddleRightEdge + ball.getRadius()); // Reposition to avoid sticking
             }
 
             // Right paddle collision detection
-            if (ball.getX() + ball.getRadius() >= windowWidth - paddleWidth &&
+            if (ballRightEdge >= rightPaddleLeftEdge &&
                 ball.getY() >= rightPaddle.getYPosition() &&
                 ball.getY() <= rightPaddle.getYPosition() + paddleHeight) {
-                ball.setXSpeed(-Math.abs(ball.getXSpeed()));
+                ball.setXSpeed(-Math.abs(ball.getXSpeed())); // Reverses direction
+                ball.setX(rightPaddleLeftEdge - ball.getRadius()); // Reposition to avoid sticking
             }
         }
     }

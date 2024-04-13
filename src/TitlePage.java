@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class TitlePage extends JFrame {
 
@@ -10,76 +9,68 @@ public class TitlePage extends JFrame {
         setSize(1000, 1000);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // Center the window
-
-        // Gradient background
-        JPanel contentPane = new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2d = (Graphics2D) g;
-                int width = getWidth();
-                int height = getHeight();
-                Color color1 = new Color(70, 130, 180); // Steel Blue
-                Color color2 = new Color(135, 206, 235); // Sky Blue
-                GradientPaint gp = new GradientPaint(0, 0, color1, 0, height, color2);
-                g2d.setPaint(gp);
-                g2d.fillRect(0, 0, width, height);
-            }
-        };
-        setContentPane(contentPane);
         setLayout(new BorderLayout());
 
-    // Title label
-    JLabel titleLabel = new JLabel("Ping Pong Extravaganza", SwingConstants.CENTER);
-    titleLabel.setFont(new Font("Arial", Font.BOLD, 50));
-    titleLabel.setForeground(Color.WHITE); // Set color to white for visibility against gradient
-    titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center alignment
-
-    // Subtitle label
-    JLabel subtitleLabel = new JLabel("Designed by Ankit Rao", SwingConstants.CENTER);
-    subtitleLabel.setFont(new Font("Arial", Font.ITALIC, 30));
-    subtitleLabel.setForeground(Color.WHITE); // Set color to white for visibility against gradient
-    subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Center alignment
-
-    // Start game button
-    JButton startButton = new JButton("Start Game");
-    startButton.setFont(new Font("Arial", Font.BOLD, 50));
-    startButton.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            startGame();
-        }
-    });
-    startButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Centers alignment
-
-    // Layout with vertical boxes to have spacing between the title, subtitle, and start button
-    Box verticalBox = Box.createVerticalBox();
-    verticalBox.add(Box.createVerticalStrut(200)); // Adds empty space
-    verticalBox.add(titleLabel);
-    verticalBox.add(Box.createVerticalStrut(50)); // Adds empty space
-    verticalBox.add(subtitleLabel);
-    verticalBox.add(Box.createVerticalStrut(100)); // Adds empty space
-    verticalBox.add(startButton);
-    add(verticalBox, BorderLayout.CENTER);
-
+        prepareUI();
     }
 
+    private void prepareUI() {
+        JPanel contentPane = createGradientPanel();
+        setContentPane(contentPane);
 
-    private void startGame() {
-        this.setVisible(false); // Hides the title page to transition to the actual game
+        JLabel titleLabel = new JLabel("Ping Pong Extravaganza", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 50));
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JLabel subtitleLabel = new JLabel("Designed by Ankit Rao", SwingConstants.CENTER);
+        subtitleLabel.setFont(new Font("Arial", Font.ITALIC, 30));
+        subtitleLabel.setForeground(Color.WHITE);
+        subtitleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JButton startButton = new JButton("Start Game");
+        startButton.setFont(new Font("Arial", Font.BOLD, 50));
+        startButton.addActionListener(this::startGame);
+        startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        Box verticalBox = Box.createVerticalBox();
+        verticalBox.add(Box.createVerticalStrut(200));
+        verticalBox.add(titleLabel);
+        verticalBox.add(Box.createVerticalStrut(50));
+        verticalBox.add(subtitleLabel);
+        verticalBox.add(Box.createVerticalStrut(100));
+        verticalBox.add(startButton);
+        add(verticalBox, BorderLayout.CENTER);
+    }
+
+    private JPanel createGradientPanel() {
+        return new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(0, 0, new Color(70, 130, 180), 0, getHeight(), new Color(135, 206, 235));
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+    }
+
+    private void startGame(ActionEvent e) {
+        setVisible(false); // Hide the title page
         JFrame gameFrame = new JFrame("Ping Pong Game");
+        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         PingPongAnimation game = new PingPongAnimation();
         gameFrame.add(game);
         gameFrame.pack();
-        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        gameFrame.setLocationRelativeTo(null); // Center the game window
         gameFrame.setVisible(true);
-        game.playMusic();
+        game.requestFocusInWindow(); // Ensure the game panel requests focus
     }
 
-    //Main method to run the game
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
-            TitlePage tp = new TitlePage();
-            tp.setVisible(true);
+            new TitlePage().setVisible(true);
         });
     }
 }

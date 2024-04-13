@@ -16,39 +16,45 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     private PingPong pingPong;
 
     public PingPongAnimation() {
-        pingPong = new PingPong(1000, 1000, ballSize, 120); // Assuming 120 is the paddle height
-
+        pingPong = new PingPong(1000, 1000, ballSize, 120);
         setBackground(Color.RED);
         setPreferredSize(new Dimension(1000, 1000));
         setFocusable(true);
+        requestFocusInWindow();  // Request focus
+
         timer = new Timer(1000 / 60, this);
         timer.start();
 
-       //Keyboard movements and binding to the certain keys 
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_W:
-                        pingPong.getLeftPaddle().moveUp();
-                        break;
-                    case KeyEvent.VK_S:
-                        pingPong.getLeftPaddle().moveDown();
-                        break;
-                    case KeyEvent.VK_UP:
-                        pingPong.getRightPaddle().moveUp();
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        pingPong.getRightPaddle().moveDown();
-                        break;
-                }
+                handleKeyEvents(e);
             }
         });
 
         pingPong.setGameOverListener(winnerMessage -> SwingUtilities.invokeLater(() -> {
-            pingPong.stopGame();
             displayGameOverMessage(winnerMessage);
         }));
+
+        playMusic();
+
+    }
+
+    private void handleKeyEvents(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_W:
+                pingPong.getLeftPaddle().moveUp();
+                break;
+            case KeyEvent.VK_S:
+                pingPong.getLeftPaddle().moveDown();
+                break;
+            case KeyEvent.VK_UP:
+                pingPong.getRightPaddle().moveUp();
+                break;
+            case KeyEvent.VK_DOWN:
+                pingPong.getRightPaddle().moveDown();
+                break;
+        }
     }
 
     @Override
@@ -97,16 +103,24 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     }
 
     public void playMusic() {
-        File soundFile = new File("c:\\Users\\1009197\\Downloads\\you belong with me.wav");
-        try (AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
-             Clip clip = AudioSystem.getClip()) {
+        // Defines the path to the audio file
+        String filePath = "c:\\Users\\1009197\\Downloads\\you belong with me.wav";
+        File soundFile = new File(filePath);
+        
+        try {
+            // Sets up an AudioInputStream and Clip
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+            Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            clip.loop(Clip.LOOP_CONTINUOUSLY); // Plays the music continuously
         } catch (Exception e) {
+            //Prints error message to consol incase music doesn't play
             System.out.println("Audio error: " + e.getMessage());
-            e.printStackTrace();
+            e.printStackTrace(); 
         }
     }
+    
+
 
     private void displayGameOverMessage(String message) {
         JOptionPane.showMessageDialog(this, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
