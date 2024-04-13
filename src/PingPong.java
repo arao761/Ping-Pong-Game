@@ -106,28 +106,21 @@ public class PingPong {
 
     public void checkCollisionWithPaddles() {
         for (Ball ball : balls) {
-            int ballLeftEdge = (int) (ball.getX() - ball.getRadius());
-            int ballRightEdge = (int) (ball.getX() + ball.getRadius());
-            int leftPaddleRightEdge = paddleWidth;
-            int rightPaddleLeftEdge = windowWidth - paddleWidth;
-
             // Left paddle collision detection
-            if (ballLeftEdge <= leftPaddleRightEdge &&
-                ball.getY() >= leftPaddle.getYPosition() &&
-                ball.getY() <= leftPaddle.getYPosition() + paddleHeight) {
-                ball.setXSpeed(Math.abs(ball.getXSpeed()));  // Reverses direction
-                ball.setX(leftPaddleRightEdge + ball.getRadius()); // Reposition to avoid sticking
-            }
+            if (ball.getX() - ball.getRadius() <= (20 + paddleWidth) && // Checks if the ball is within the paddle's x range
+                ball.getY() + ball.getRadius() >= leftPaddle.getYPosition() && // Checks if the bottom of the ball is at or below the top of the paddle
+                ball.getY() - ball.getRadius() <= leftPaddle.getYPosition() + paddleHeight) { // Checks if the top of the ball is at or above the bottom of the paddle
+                ball.setXSpeed(Math.abs(ball.getXSpeed())); // Reverses the ball's X speed to bounce it back
+             }     
 
-            // Right paddle collision detection
-            if (ballRightEdge >= rightPaddleLeftEdge &&
-                ball.getY() >= rightPaddle.getYPosition() &&
-                ball.getY() <= rightPaddle.getYPosition() + paddleHeight) {
-                ball.setXSpeed(-Math.abs(ball.getXSpeed())); // Reverses direction
-                ball.setX(rightPaddleLeftEdge - ball.getRadius()); // Reposition to avoid sticking
-            }
-        }
+             // Right paddle collision detection
+             if (ball.getX() + ball.getRadius() >= windowWidth - (20 + paddleWidth) &&
+             ball.getY() + ball.getRadius() >= rightPaddle.getYPosition() && // Checks if the bottom of the ball is at or below the top of the paddle
+             ball.getY() - ball.getRadius() <= rightPaddle.getYPosition() + paddleHeight) { // Checks if the top of the ball is at or above the bottom of the paddle
+             ball.setXSpeed(-Math.abs(ball.getXSpeed())); // Reverses the ball's X speed to bounce it back
+         }
     }
+ }
 
     public void moveBall() {
 
@@ -196,4 +189,3 @@ public class PingPong {
     }
 
  } 
-

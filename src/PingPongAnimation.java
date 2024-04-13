@@ -14,6 +14,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     private final int ballSize = 25;
     private final Timer timer;
     private PingPong pingPong;
+    private Clip musicClip;
 
     public PingPongAnimation() {
         pingPong = new PingPong(1000, 1000, ballSize, 120);
@@ -34,10 +35,19 @@ public class PingPongAnimation extends JPanel implements ActionListener {
 
         pingPong.setGameOverListener(winnerMessage -> SwingUtilities.invokeLater(() -> {
             displayGameOverMessage(winnerMessage);
+            stopGameActivities();  // Stops all game activities including music
         }));
 
-        playMusic();
+       musicClip = playMusic();
 
+    }
+
+
+    private void stopGameActivities() {
+        pingPong.stopGame();  // Stops the game, will stop ball movements
+        if (musicClip != null) {
+            musicClip.stop();  // Stop playing music
+        }
     }
 
     private void handleKeyEvents(KeyEvent e) {
@@ -87,11 +97,11 @@ public class PingPongAnimation extends JPanel implements ActionListener {
 
         // Score display
         String scoreText = "Left Player: " + pingPong.getLeftScore() + "    Right Player: " + pingPong.getRightScore();
-        Font scoreFont = new Font("Courier", Font.BOLD, 24);
+        Font scoreFont = new Font("Courier", Font.BOLD, 30);
         g2d.setFont(scoreFont);
         FontMetrics metrics = g2d.getFontMetrics(scoreFont);
         int textWidth = metrics.stringWidth(scoreText);
-        g2d.drawString(scoreText, (getWidth() - textWidth) / 2, 30);
+        g2d.drawString(scoreText, (getWidth() - textWidth) / 3, 30);
     }
 
     @Override
@@ -102,7 +112,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         repaint();
     }
 
-    public void playMusic() {
+    public Clip playMusic() {
         // Defines the path to the audio file
         String filePath = "c:\\Users\\1009197\\Downloads\\you belong with me.wav";
         File soundFile = new File(filePath);
@@ -113,17 +123,41 @@ public class PingPongAnimation extends JPanel implements ActionListener {
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
             clip.loop(Clip.LOOP_CONTINUOUSLY); // Plays the music continuously
+            return clip;
         } catch (Exception e) {
             //Prints error message to consol incase music doesn't play
             System.out.println("Audio error: " + e.getMessage());
             e.printStackTrace(); 
         }
+
+        return null; 
     }
     
 
 
     private void displayGameOverMessage(String message) {
-        JOptionPane.showMessageDialog(this, message, "Game Over", JOptionPane.INFORMATION_MESSAGE);
-        System.exit(0);
+        JDialog gameOverDialog = new JDialog();
+        gameOverDialog.setSize(400, 200);
+        gameOverDialog.setLayout(new BorderLayout());
+        gameOverDialog.setLocationRelativeTo(this);
+        gameOverDialog.setModal(true);
+
+        JPanel messagePanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gradient = new GradientPaint(0, 0, Color.BLUE, getWidth(), getHeight(), Color.CYAN);
+                g2d.setPaint(gradient);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        };
+        messagePanel.setLayout(new BorderLayout());
+        JLabel messageLabel = new JLabel("<html><div style='text-align: center; color: white; font-size: 16px;'>" + message + "</div></html>");
+        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        messagePanel.add(messageLabel, BorderLayout.CENTER);
+
+        gameOverDialog.add(messagePanel);
+        gameOverDialog.setVisible(true);
     }
 }
