@@ -24,10 +24,5 @@ public class Paddle {
     public int getYPosition() {
         return yPosition;
     }
-
-    public void reset() {
-        // Resets the paddle's position to the middle of the window
-        this.yPosition = windowHeight / 2 - paddleHeight / 2;
-    }
     
 }
