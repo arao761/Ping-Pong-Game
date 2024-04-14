@@ -90,7 +90,7 @@ public class PingPong {
         this.leftPaddle = new Paddle(windowHeight, paddleHeight, 50);
         this.rightPaddle = new Paddle(windowHeight, paddleHeight, 50);
 
-        this.balls = new Ball[7]; // Initializes the array of 7 balls
+        this.balls = new Ball[8]; // Initializes the array of 8 balls
         for (int i = 0; i < this.balls.length; i++) {
             this.balls[i] = new Ball(windowWidth / 2, windowHeight / 2, this.ballSize, Color.ORANGE);
             this.balls[i].setRandomSpeed(9); 
