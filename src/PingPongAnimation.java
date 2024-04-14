@@ -10,9 +10,11 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.File;
 import java.awt.geom.Ellipse2D;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class PingPongAnimation extends JPanel implements ActionListener {
-    private final int ballSize = 25;
+    private final int ballSize = 30;
     private final Timer timer;
     private PingPong pingPong;
     private Clip musicClip;
@@ -20,9 +22,17 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     public PingPongAnimation() {
         pingPong = new PingPong(1000, 1000, ballSize, 120);
         setBackground(Color.RED);
-        setPreferredSize(new Dimension(1000, 1000));
+        setPreferredSize(new Dimension(pingPong.getWindowWidth(), pingPong.getWindowHeight()));
         setFocusable(true);
         requestFocusInWindow();  // Request focus
+
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                pingPong.setWindowWidth(getWidth());
+                pingPong.setWindowHeight(getHeight());
+            }
+        });
 
         timer = new Timer(1000 / 60, this);
         timer.start();
@@ -42,6 +52,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
        musicClip = playMusic();
 
     }
+
 
 
     private void stopGameActivities() {
@@ -101,7 +112,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         g2d.drawLine(getWidth()/2, 0, getWidth()/2, getHeight());
 
         // Score display
-        Font scoreFont = new Font("Courier", Font.BOLD, 30);
+        Font scoreFont = new Font("Courier", Font.BOLD, 40);
         g2d.setFont(scoreFont);
         FontMetrics metrics = g2d.getFontMetrics(scoreFont);
 
@@ -110,8 +121,8 @@ public class PingPongAnimation extends JPanel implements ActionListener {
 
         int rightTextWidth = metrics.stringWidth(rightScoreText);
 
-        g2d.drawString(leftScoreText, 30,30);
-        g2d.drawString(rightScoreText, getWidth() - rightTextWidth - 30, 30);
+        g2d.drawString(leftScoreText, 40,45);
+        g2d.drawString(rightScoreText, getWidth() - rightTextWidth - 40, 45);
     }
 
    @Override
@@ -145,11 +156,11 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     
     private void displayGameOverMessage(String message) {
         JDialog gameOverDialog = new JDialog();
-        gameOverDialog.setSize(400, 80);
+        gameOverDialog.setSize(400, 200);  // Increase the size to accommodate the button
         gameOverDialog.setLayout(new BorderLayout());
         gameOverDialog.setLocationRelativeTo(this);
         gameOverDialog.setModal(true);
-
+    
         JPanel messagePanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
@@ -164,8 +175,21 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         messageLabel.setFont(new Font("Arial", Font.BOLD, 20));
         messageLabel.setForeground(Color.WHITE);
         messagePanel.add(messageLabel);
-
-        gameOverDialog.add(messagePanel);
+    
+        // Creates a "Play Again" button
+        JButton playAgainButton = new JButton("Play Again");
+        playAgainButton.addActionListener(e -> {
+            pingPong.resetGame();
+            timer.start();
+            if (musicClip != null) {
+                musicClip.loop(Clip.LOOP_CONTINUOUSLY);
+            }
+            gameOverDialog.dispose();
+        });
+    
+        // Adds the message panel and the button to the dialog
+        gameOverDialog.add(messagePanel, BorderLayout.CENTER);
+        gameOverDialog.add(playAgainButton, BorderLayout.PAGE_END);
         gameOverDialog.setVisible(true);
     }
 }
