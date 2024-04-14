@@ -93,7 +93,7 @@ public class PingPong {
         this.balls = new Ball[8]; // Initializes the array of 8 balls
         for (int i = 0; i < this.balls.length; i++) {
             this.balls[i] = new Ball(windowWidth / 2, windowHeight / 2, this.ballSize, Color.ORANGE);
-            this.balls[i].setRandomSpeed(9); 
+            this.balls[i].setRandomSpeed(10); 
         }
     }
 
@@ -175,6 +175,24 @@ public class PingPong {
         }
     }
 
+
+    public void resetGame() {
+        // Resets the score
+        this.leftScore = 0;
+        this.rightScore = 0;
+    
+        // Resets the paddles
+        this.leftPaddle.reset();
+        this.rightPaddle.reset();
+    
+        // Resets the balls
+        for (Ball ball : this.balls) {
+            resetBall(ball);
+        }
+    
+        // Resets the game over state
+        this.isGameOver = false;
+    }
 
 
     //Method to stop the game once the winner has been decided 
