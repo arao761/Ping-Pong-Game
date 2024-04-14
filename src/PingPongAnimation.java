@@ -156,7 +156,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
     
     private void displayGameOverMessage(String message) {
         JDialog gameOverDialog = new JDialog();
-        gameOverDialog.setSize(400, 200);  // Increase the size to accommodate the button
+        gameOverDialog.setSize(400, 80);
         gameOverDialog.setLayout(new BorderLayout());
         gameOverDialog.setLocationRelativeTo(this);
         gameOverDialog.setModal(true);
@@ -175,21 +175,10 @@ public class PingPongAnimation extends JPanel implements ActionListener {
         messageLabel.setFont(new Font("Arial", Font.BOLD, 20));
         messageLabel.setForeground(Color.WHITE);
         messagePanel.add(messageLabel);
-    
-        // Creates a "Play Again" button
-        JButton playAgainButton = new JButton("Play Again");
-        playAgainButton.addActionListener(e -> {
-            pingPong.resetGame();
-            timer.start();
-            if (musicClip != null) {
-                musicClip.loop(Clip.LOOP_CONTINUOUSLY);
-            }
-            gameOverDialog.dispose();
-        });
+
     
         // Adds the message panel and the button to the dialog
         gameOverDialog.add(messagePanel, BorderLayout.CENTER);
-        gameOverDialog.add(playAgainButton, BorderLayout.PAGE_END);
         gameOverDialog.setVisible(true);
     }
 }
