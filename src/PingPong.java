@@ -101,7 +101,7 @@ public class PingPong {
     public void resetBall(Ball ball) {
         ball.setX(windowWidth / 2);
         ball.setY(windowHeight / 2);
-        ball.setRandomSpeed(14);
+        ball.setRandomSpeed(10);
     }
 
     public void checkCollisionWithPaddles() {
@@ -173,25 +173,6 @@ public class PingPong {
                 rightPaddle.moveDown();
             }
         }
-    }
-
-
-    public void resetGame() {
-        // Resets the score
-        this.leftScore = 0;
-        this.rightScore = 0;
-    
-        // Resets the paddles
-        this.leftPaddle.reset();
-        this.rightPaddle.reset();
-    
-        // Resets the balls
-        for (Ball ball : this.balls) {
-            resetBall(ball);
-        }
-    
-        // Resets the game over state
-        this.isGameOver = false;
     }
 
 
