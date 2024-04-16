@@ -135,7 +135,7 @@ public class PingPongAnimation extends JPanel implements ActionListener {
 
     public Clip playMusic() {
         // Defines the path to the audio file
-        String filePath = "c:\\Users\\1009197\\Downloads\\you belong with me.wav";
+        String filePath = "./src/you belong with me.wav";
         File soundFile = new File(filePath);
         
         try {
